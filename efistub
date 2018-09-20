@@ -39,8 +39,8 @@ fn_add_bootentry() {
   local EFI_UUID="$(blkid -s UUID -o value $(df --output=source "$EFIPATH" | tail -n -1))"
 
   local EFIDEVICE=$(blkid -U $EFI_UUID)
-  local EFIPART=${EFIDEVICE:(-1)}
-  local EFIDISK=${EFIDEVICE%$EFIPART}
+  local EFIPART=$(cat /sys/class/block/$(lsblk -no kname ${EFIDEVICE})/partition)
+  local EFIDISK=$(lsblk -pno pkname ${EFIDEVICE})
 
   # create EFI boot menu entry
   if [[ -z $BOOTOPT ]]; then
